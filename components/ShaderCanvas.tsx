@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -146,17 +146,24 @@ interface ShaderPlaneProps {
 
 function ShaderPlane({ scrollProgress, mousePos }: ShaderPlaneProps) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null)
   const { size } = useThree()
 
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uMouse: { value: new THREE.Vector2(0, 0) },
-    uScroll: { value: 0 },
-    uNoiseIntensity: { value: 1.0 },
-    uResolution: { value: new THREE.Vector2(size.width, size.height) },
-  }), [size])
+  useEffect(() => {
+    if (!materialRef.current) return
+
+    const uniforms = materialRef.current.uniforms
+    const updateUniforms = () => {
+      uniforms.uResolution.value.set(size.width, size.height)
+    }
+
+    updateUniforms()
+  }, [size])
 
   useFrame(({ clock }) => {
+    if (!materialRef.current) return
+
+    const uniforms = materialRef.current.uniforms
     uniforms.uTime.value = clock.getElapsedTime()
     uniforms.uMouse.value.set(mousePos.x, mousePos.y)
     uniforms.uScroll.value = scrollProgress
@@ -167,9 +174,16 @@ function ShaderPlane({ scrollProgress, mousePos }: ShaderPlaneProps) {
     <mesh ref={meshRef}>
       <planeGeometry args={[2, 2]} />
       <shaderMaterial
+        ref={materialRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        uniforms={uniforms}
+        uniforms={{
+          uTime: { value: 0 },
+          uMouse: { value: new THREE.Vector2(0, 0) },
+          uScroll: { value: 0 },
+          uNoiseIntensity: { value: 1.0 },
+          uResolution: { value: new THREE.Vector2(size.width, size.height) },
+        }}
       />
     </mesh>
   )

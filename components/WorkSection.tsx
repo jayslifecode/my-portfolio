@@ -1,8 +1,9 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import gsap from 'gsap'
+import { useIsTouch, useIsMobile } from '@/hooks/useBreakpoint'
 
 interface Project {
   name: string
@@ -179,21 +180,20 @@ function ProjectRow({ project, index, onMouseEnter, onMouseLeave, onMouseMove }:
           {project.desc}
         </p>
       </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', justifyContent: 'flex-end', flexShrink: 0 }}>
-        {project.url && (
-          <span
-            style={{
-              fontFamily: 'var(--font-oxanium), sans-serif',
-              fontSize: '0.65rem',
-              letterSpacing: '0.15em',
-              color: 'rgba(200,75,12,0.5)',
-              textTransform: 'uppercase',
-            }}
-          >
-            →
-          </span>
-        )}
-      </div>
+      {project.url && (
+        <span
+          style={{
+            fontFamily: 'var(--font-oxanium), sans-serif',
+            fontSize: '0.65rem',
+            letterSpacing: '0.15em',
+            color: 'rgba(200,75,12,0.5)',
+            textTransform: 'uppercase',
+            flexShrink: 0,
+          }}
+        >
+          →
+        </span>
+      )}
     </motion.div>
   )
 }
@@ -205,6 +205,8 @@ const scaleAnimation = {
 }
 
 export default function WorkSection() {
+  const isTouch = useIsTouch()
+  const isMobile = useIsMobile()
   const [modal, setModal] = useState({ active: false, index: 0 })
   const headerRef = useRef<HTMLDivElement>(null)
   const isHeaderInView = useInView(headerRef, { once: true, margin: '-100px' })
@@ -225,11 +227,13 @@ export default function WorkSection() {
   }
 
   const handleEnter = (index: number, x: number, y: number) => {
+    if (isTouch) return
     moveModal(x, y)
     setModal({ active: true, index })
   }
 
   const handleLeave = (index: number, x: number, y: number) => {
+    if (isTouch) return
     moveModal(x, y)
     setModal({ active: false, index })
   }
@@ -238,12 +242,12 @@ export default function WorkSection() {
     <section
       id="work"
       className="relative z-10"
-      style={{ padding: '8rem 0 6rem', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+      style={{ padding: isMobile ? '5rem 0 2.5rem' : '8rem 0 6rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
     >
       <div style={{ maxWidth: '920px', margin: '0 auto', padding: '0 2rem', width: '100%' }}>
 
         {/* Section header */}
-        <div ref={headerRef} style={{ marginBottom: '4rem', position: 'relative' }}>
+        <div ref={headerRef} style={{ marginBottom: isMobile ? '2.5rem' : '4rem', position: 'relative' }}>
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
@@ -310,20 +314,22 @@ export default function WorkSection() {
           >
             Things I&apos;ve shipped.
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={isHeaderInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.25 }}
-            style={{
-              fontFamily: 'var(--font-space-mono), monospace',
-              fontSize: '0.6rem',
-              letterSpacing: '0.1em',
-              color: 'rgba(255,255,255,0.2)',
-              marginTop: '0.5rem',
-            }}
-          >
-            /* hover each row for a preview */
-          </motion.p>
+          {!isTouch && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={isHeaderInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              style={{
+                fontFamily: 'var(--font-space-mono), monospace',
+                fontSize: '0.6rem',
+                letterSpacing: '0.1em',
+                color: 'rgba(255,255,255,0.2)',
+                marginTop: '0.5rem',
+              }}
+            >
+              {'/* hover each row for a preview */'}
+            </motion.p>
+          )}
         </div>
 
         {/* Project list */}
@@ -341,12 +347,13 @@ export default function WorkSection() {
         </div>
       </div>
 
-      {/* Floating modal preview */}
-      <motion.div
+      {/* Floating modal preview — desktop/mouse only */}
+      {!isTouch && <motion.div
         ref={modalRef}
         variants={scaleAnimation}
         animate={modal.active ? 'open' : 'closed'}
         initial="initial"
+        data-cursor="none"
         style={{
           position: 'fixed',
           width: '300px',
@@ -379,7 +386,7 @@ export default function WorkSection() {
             </div>
           ))}
         </div>
-      </motion.div>
+      </motion.div>}
     </section>
   )
 }

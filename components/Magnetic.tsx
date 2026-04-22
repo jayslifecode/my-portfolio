@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, cloneElement, Children } from 'react'
+import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 
 interface MagneticProps {

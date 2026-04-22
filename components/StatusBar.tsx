@@ -1,8 +1,9 @@
 'use client'
 
-const SPECS = ['FULLSTACK', 'AI/ML', 'MOBILE', 'ECOMMERCE']
+import { useIsMobile } from '@/hooks/useBreakpoint'
 
 export default function StatusBar() {
+  const isMobile = useIsMobile()
   return (
     <div
       style={{
@@ -14,88 +15,73 @@ export default function StatusBar() {
         height: '36px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
         padding: '0 2rem',
         background: 'rgba(10, 10, 10, 0.9)',
         backdropFilter: 'blur(12px)',
         borderTop: '1px solid var(--border)',
+        gap: '0.75rem',
       }}
     >
-      {/* Status left */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <span
-          style={{
-            display: 'inline-block',
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            background: '#22c55e',
-            animation: 'status-blink 2s ease-in-out infinite',
-          }}
-        />
-        <span
-          style={{
-            fontFamily: 'var(--font-oxanium), sans-serif',
-            fontSize: '0.6rem',
-            fontWeight: 700,
-            letterSpacing: '0.2em',
-            color: '#ffffff',
-          }}
-        >
-          JAY.EXE
-        </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-space-mono), monospace',
-            fontSize: '0.55rem',
-            letterSpacing: '0.1em',
-            color: 'rgba(255,255,255,0.2)',
-          }}
-        >
-          —
-        </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-space-mono), monospace',
-            fontSize: '0.55rem',
-            letterSpacing: '0.12em',
-            color: 'var(--ember)',
-          }}
-        >
-          AVAILABLE FOR HIRE
-        </span>
-      </div>
-
-      {/* Spec tags */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-        {SPECS.map((spec) => (
-          <span
-            key={spec}
-            style={{
-              fontFamily: 'var(--font-space-mono), monospace',
-              fontSize: '0.48rem',
-              letterSpacing: '0.12em',
-              color: 'rgba(255,255,255,0.2)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              padding: '2px 6px',
-            }}
-          >
-            {spec}
-          </span>
-        ))}
-      </div>
-
-      {/* Right: session info */}
+      <span
+        style={{
+          display: 'inline-block',
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: '#22c55e',
+          animation: 'status-blink 2s ease-in-out infinite',
+        }}
+      />
+      <span
+        style={{
+          fontFamily: 'var(--font-oxanium), sans-serif',
+          fontSize: '0.6rem',
+          fontWeight: 700,
+          letterSpacing: '0.2em',
+          color: '#ffffff',
+        }}
+      >
+        JAY.EXE
+      </span>
       <span
         style={{
           fontFamily: 'var(--font-space-mono), monospace',
-          fontSize: '0.48rem',
-          letterSpacing: '0.12em',
-          color: 'rgba(255,255,255,0.12)',
+          fontSize: '0.55rem',
+          letterSpacing: '0.1em',
+          color: 'rgba(255,255,255,0.2)',
         }}
       >
-        // digitalmind.mn
+        —
       </span>
+      <span
+        style={{
+          fontFamily: 'var(--font-space-mono), monospace',
+          fontSize: '0.55rem',
+          letterSpacing: '0.12em',
+          color: 'var(--ember)',
+        }}
+      >
+        AVAILABLE FOR HIRE
+      </span>
+
+      <div style={{ flex: 1 }} />
+
+      {!isMobile && (
+        <span
+          style={{
+            fontFamily: 'var(--font-space-mono), monospace',
+            fontSize: '0.48rem',
+            letterSpacing: '0.1em',
+            color: 'rgba(255,255,255,0.45)',
+          }}
+        >
+          designed &amp; built by{' '}
+          <span style={{ color: 'rgba(255,255,255,0.75)', fontWeight: 700 }}>
+            Munkhjavkhlan E. / Jay
+          </span>
+          {' '}· © 2026
+        </span>
+      )}
     </div>
   )
 }

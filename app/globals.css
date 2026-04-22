@@ -31,7 +31,12 @@ body {
   color: var(--text);
   font-family: 'Space Mono', 'Courier New', monospace;
   overflow-x: hidden;
-  cursor: none;
+}
+
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
 }
 
 /* Scanline CRT overlay */
@@ -150,8 +155,74 @@ body::after {
   50% { opacity: 0; }
 }
 
+@keyframes cursor-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes cursor-spin-rev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
 @keyframes wave {
   0%, 100% { transform: rotate(0deg); }
   25% { transform: rotate(-15deg); }
   75% { transform: rotate(10deg); }
+}
+
+/* Skill token emergence animations — 6 drift directions */
+@keyframes skill-float-a {
+  0%   { transform: translateX(-50%); opacity: 0; }
+  12%  { opacity: 1; }
+  78%  { opacity: 0.8; }
+  100% { transform: translate(calc(-50% - 22px), -60px); opacity: 0; }
+}
+@keyframes skill-float-b {
+  0%   { transform: translateX(-50%); opacity: 0; }
+  12%  { opacity: 1; }
+  78%  { opacity: 0.8; }
+  100% { transform: translate(calc(-50% + 24px), -52px); opacity: 0; }
+}
+@keyframes skill-float-c {
+  0%   { transform: translateX(-50%); opacity: 0; }
+  12%  { opacity: 1; }
+  78%  { opacity: 0.8; }
+  100% { transform: translate(calc(-50% - 4px), -70px); opacity: 0; }
+}
+@keyframes skill-float-d {
+  0%   { transform: translateX(-50%); opacity: 0; }
+  12%  { opacity: 1; }
+  78%  { opacity: 0.8; }
+  100% { transform: translate(calc(-50% + 34px), -44px); opacity: 0; }
+}
+@keyframes skill-float-e {
+  0%   { transform: translateX(-50%); opacity: 0; }
+  12%  { opacity: 1; }
+  78%  { opacity: 0.8; }
+  100% { transform: translate(calc(-50% - 30px), -46px); opacity: 0; }
+}
+@keyframes skill-float-f {
+  0%   { transform: translateX(-50%); opacity: 0; }
+  12%  { opacity: 1; }
+  78%  { opacity: 0.8; }
+  100% { transform: translate(calc(-50% + 10px), -38px); opacity: 0; }
+}
+@keyframes type-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes grain-shift {
+  0%   { transform: translate(0,    0);    }
+  10%  { transform: translate(-4%, -7%);  }
+  20%  { transform: translate(5%,  -2%);  }
+  30%  { transform: translate(-3%,  8%);  }
+  40%  { transform: translate(6%,   3%);  }
+  50%  { transform: translate(-6%, -5%);  }
+  60%  { transform: translate(2%,   7%);  }
+  70%  { transform: translate(-5%,  2%);  }
+  80%  { transform: translate(4%,  -6%);  }
+  90%  { transform: translate(-2%,  4%);  }
+  100% { transform: translate(0,    0);   }
 }

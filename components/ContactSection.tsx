@@ -1,27 +1,37 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import MagneticButton from './MagneticButton'
+import { useIsMobile } from '@/hooks/useBreakpoint'
 
-const EMAIL = 'munkhjavkhlan.e@digitalmind.mn'
+const EMAIL = 'jayslifecode@gmail.com'
 
 export default function ContactSection() {
+  const isMobile = useIsMobile()
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: false, margin: '-100px' })
-  const [copied, setCopied] = useState(false)
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(EMAIL)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2200)
+  const handleEmailClick = () => {
+    const subject = encodeURIComponent('Booking a Meeting')
+    window.location.href = `mailto:${EMAIL}?subject=${subject}`
+  }
+
+  const handleBookMeeting = () => {
+    const title = encodeURIComponent('Meeting with Jay')
+    const details = encodeURIComponent('Booking a meeting via portfolio')
+    const add = encodeURIComponent(EMAIL)
+    window.open(
+      `https://calendar.google.com/calendar/u/0/r/eventedit?text=${title}&details=${details}&add=${add}`,
+      '_blank'
+    )
   }
 
   return (
     <section
       id="contact"
-      className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center"
-      style={{ padding: '8rem 2rem 6rem' }}
+      className="relative z-10 flex flex-col justify-center items-center text-center"
+      style={{ padding: isMobile ? '3rem 1.5rem 5rem' : 'clamp(4rem, 10vw, 8rem) 1.5rem 6rem' }}
     >
       <div ref={ref} style={{ maxWidth: '720px', width: '100%' }}>
 
@@ -55,11 +65,13 @@ export default function ContactSection() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           style={{
             fontFamily: 'var(--font-oxanium), sans-serif',
-            fontSize: 'clamp(3.5rem, 12vw, 9rem)',
+            fontSize: 'clamp(3.5rem, 10vw, 7rem)',
             fontWeight: 800,
             letterSpacing: '-0.03em',
             lineHeight: 0.95,
             color: '#ffffff',
+            textAlign: 'center',
+            width: '100%',
           }}
         >
           LET&apos;S
@@ -85,9 +97,9 @@ export default function ContactSection() {
             lineHeight: 1.7,
           }}
         >
-          // available for freelance · projects · collaborations
+          {'// open to freelance · full-time · collaborations'}
           <br />
-          // i reply fast. no ghosting. promise.
+          {'// based in seoul — fast replies, no ghosting.'}
         </motion.p>
 
         {/* Email + CTA row */}
@@ -97,9 +109,14 @@ export default function ContactSection() {
           transition={{ duration: 0.7, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}
         >
-          <MagneticButton onClick={handleCopy}>
-            {copied ? '✓ copied' : EMAIL}
-          </MagneticButton>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <MagneticButton onClick={handleEmailClick}>
+              Email Me →
+            </MagneticButton>
+            <MagneticButton onClick={handleBookMeeting}>
+              Book a Meeting →
+            </MagneticButton>
+          </div>
 
           <p
             style={{
@@ -109,7 +126,7 @@ export default function ContactSection() {
               color: 'rgba(255,255,255,0.15)',
             }}
           >
-            click to copy
+            {EMAIL}
           </p>
         </motion.div>
 
@@ -151,27 +168,6 @@ export default function ContactSection() {
         </motion.div>
       </div>
 
-      {/* Footer */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '2rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          textAlign: 'center',
-        }}
-      >
-        <p
-          style={{
-            fontFamily: 'var(--font-space-mono), monospace',
-            fontSize: '0.58rem',
-            letterSpacing: '0.2em',
-            color: 'rgba(255,255,255,0.12)',
-          }}
-        >
-          © JAY 2026 · MUNKHJAVKHLAN ENKHBAATAR
-        </p>
-      </div>
     </section>
   )
 }

@@ -10,6 +10,7 @@ interface MagneticButtonProps {
   href?: string
   style?: React.CSSProperties
   filled?: boolean
+  isInternal?: boolean
 }
 
 function ButtonInner({
@@ -88,13 +89,19 @@ function ButtonInner({
   )
 }
 
-export default function MagneticButton({ children, onClick, href, filled }: MagneticButtonProps) {
+export default function MagneticButton({ children, onClick, href, filled, isInternal }: MagneticButtonProps) {
   const inner = <ButtonInner onClick={onClick} filled={filled}>{children}</ButtonInner>
 
   if (href) {
+    const isInternalLink = isInternal || href.startsWith('/')
     return (
       <Magnetic>
-        <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'inline-block' }}>
+        <a
+          href={href}
+          target={isInternalLink ? undefined : '_blank'}
+          rel={isInternalLink ? undefined : 'noopener noreferrer'}
+          style={{ textDecoration: 'none', display: 'inline-block' }}
+        >
           {inner}
         </a>
       </Magnetic>
