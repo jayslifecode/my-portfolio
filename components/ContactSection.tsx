@@ -6,6 +6,7 @@ import MagneticButton from './MagneticButton'
 import { useIsMobile } from '@/hooks/useBreakpoint'
 
 const EMAIL = 'jayslifecode@gmail.com'
+const CALENDAR_LINK = 'https://calendar.app.google/x5PAhDkLhPem5fBU9'
 
 export default function ContactSection() {
   const isMobile = useIsMobile()
@@ -15,16 +16,6 @@ export default function ContactSection() {
   const handleEmailClick = () => {
     const subject = encodeURIComponent('Booking a Meeting')
     window.location.href = `mailto:${EMAIL}?subject=${subject}`
-  }
-
-  const handleBookMeeting = () => {
-    const title = encodeURIComponent('Meeting with Jay')
-    const details = encodeURIComponent('Booking a meeting via portfolio')
-    const add = encodeURIComponent(EMAIL)
-    window.open(
-      `https://calendar.google.com/calendar/u/0/r/eventedit?text=${title}&details=${details}&add=${add}`,
-      '_blank'
-    )
   }
 
   return (
@@ -99,7 +90,7 @@ export default function ContactSection() {
         >
           {'// open to freelance · full-time · collaborations'}
           <br />
-          {'// based in seoul — fast replies, no ghosting.'}
+          {'// based in seoul — I reply within 24 hours. No ghosting, ever.'}
         </motion.p>
 
         {/* Email + CTA row */}
@@ -113,8 +104,8 @@ export default function ContactSection() {
             <MagneticButton onClick={handleEmailClick}>
               Email Me →
             </MagneticButton>
-            <MagneticButton onClick={handleBookMeeting}>
-              Book a Meeting →
+            <MagneticButton onClick={() => window.open(CALENDAR_LINK, '_blank')}>
+              Schedule a Meeting →
             </MagneticButton>
           </div>
 
@@ -137,34 +128,34 @@ export default function ContactSection() {
           transition={{ duration: 0.7, delay: 0.45 }}
           style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginTop: '4rem' }}
         >
-          {[
-            { label: 'GitHub', url: 'https://github.com/munkhjavkhlan' },
-            { label: 'LinkedIn', url: 'https://linkedin.com/in/munkhjavkhlan' },
-          ].map(({ label, url }) => (
-            <a
-              key={label}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: 'var(--font-space-mono), monospace',
-                fontSize: '0.65rem',
-                letterSpacing: '0.2em',
-                color: 'rgba(255,255,255,0.25)',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                ;(e.currentTarget as HTMLElement).style.color = '#C84B0C'
-              }}
-              onMouseLeave={(e) => {
-                ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.25)'
-              }}
-            >
-              {label}
-            </a>
-          ))}
+          <a
+            href="https://github.com/jayslifecode"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontFamily: 'var(--font-space-mono), monospace',
+              fontSize: '0.65rem',
+              letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.25)',
+              textDecoration: 'none',
+              textTransform: 'uppercase',
+              transition: 'color 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              ;(e.currentTarget as HTMLElement).style.color = '#C84B0C'
+            }}
+            onMouseLeave={(e) => {
+              ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.25)'
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            GitHub
+          </a>
         </motion.div>
       </div>
 

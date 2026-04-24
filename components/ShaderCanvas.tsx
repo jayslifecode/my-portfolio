@@ -160,11 +160,11 @@ function ShaderPlane({ scrollProgress, mousePos }: ShaderPlaneProps) {
     updateUniforms()
   }, [size])
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
     if (!materialRef.current) return
 
     const uniforms = materialRef.current.uniforms
-    uniforms.uTime.value = clock.getElapsedTime()
+    uniforms.uTime.value = performance.now() / 1000
     uniforms.uMouse.value.set(mousePos.x, mousePos.y)
     uniforms.uScroll.value = scrollProgress
     uniforms.uResolution.value.set(size.width, size.height)

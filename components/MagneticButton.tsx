@@ -11,16 +11,24 @@ interface MagneticButtonProps {
   style?: React.CSSProperties
   filled?: boolean
   isInternal?: boolean
+  disabled?: boolean
+  fullWidth?: boolean
 }
 
 function ButtonInner({
   children,
   onClick,
   filled,
+  style,
+  disabled,
+  fullWidth,
 }: {
   children: React.ReactNode
   onClick?: () => void
   filled?: boolean
+  style?: React.CSSProperties
+  disabled?: boolean
+  fullWidth?: boolean
 }) {
   const circleRef = useRef<HTMLSpanElement>(null)
   const labelRef = useRef<HTMLSpanElement>(null)
@@ -40,24 +48,28 @@ function ButtonInner({
     return () => { tlRef.current?.kill() }
   }, [])
 
-  const onEnter = () => tlRef.current?.play()
-  const onLeave = () => tlRef.current?.reverse()
+  const onEnter = () => { if (!disabled) tlRef.current?.play() }
+  const onLeave = () => { if (!disabled) tlRef.current?.reverse() }
 
   return (
     <button
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
+      disabled={disabled}
       style={{
         position: 'relative',
         overflow: 'hidden',
-        border: '1px solid #C84B0C',
+        border: `1px solid ${disabled ? 'rgba(255,255,255,0.12)' : '#C84B0C'}`,
         background: filled ? '#C84B0C' : 'transparent',
         padding: '0.85rem 2.2rem',
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
+        opacity: disabled ? 0.35 : 1,
+        width: fullWidth ? '100%' : undefined,
+        ...style,
       }}
     >
       <span
@@ -77,10 +89,11 @@ function ButtonInner({
           fontFamily: 'var(--font-oxanium), sans-serif',
           fontSize: '0.75rem',
           fontWeight: 700,
-          letterSpacing: '0.2em',
+          letterSpacing: '0.15em',
           textTransform: 'uppercase',
-          color: filled ? '#0A0A0A' : '#C84B0C',
+          color: disabled ? 'rgba(255,255,255,0.3)' : filled ? '#0A0A0A' : '#C84B0C',
           pointerEvents: 'none',
+          whiteSpace: 'nowrap',
         }}
       >
         {children}
@@ -89,18 +102,19 @@ function ButtonInner({
   )
 }
 
-export default function MagneticButton({ children, onClick, href, filled, isInternal }: MagneticButtonProps) {
-  const inner = <ButtonInner onClick={onClick} filled={filled}>{children}</ButtonInner>
+export default function MagneticButton({ children, onClick, href, filled, isInternal, style, disabled, fullWidth }: MagneticButtonProps) {
+  const inner = <ButtonInner onClick={onClick} filled={filled} style={style} disabled={disabled} fullWidth={fullWidth}>{children}</ButtonInner>
+  const magneticStyle = fullWidth ? { display: 'block' as const } : undefined
 
   if (href) {
     const isInternalLink = isInternal || href.startsWith('/')
     return (
-      <Magnetic>
+      <Magnetic style={magneticStyle}>
         <a
           href={href}
           target={isInternalLink ? undefined : '_blank'}
           rel={isInternalLink ? undefined : 'noopener noreferrer'}
-          style={{ textDecoration: 'none', display: 'inline-block' }}
+          style={{ textDecoration: 'none', display: fullWidth ? 'block' : 'inline-block' }}
         >
           {inner}
         </a>
@@ -108,5 +122,6 @@ export default function MagneticButton({ children, onClick, href, filled, isInte
     )
   }
 
-  return <Magnetic>{inner}</Magnetic>
+  if (disabled) return inner
+  return <Magnetic style={magneticStyle}>{inner}</Magnetic>
 }

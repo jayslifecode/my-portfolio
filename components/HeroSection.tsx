@@ -18,14 +18,14 @@ interface SkillNode {
 
 // 8 nodes cleanly positioned around the avatar
 const SKILL_NODES: SkillNode[] = [
-  { x: 50, y:  5, skills: ['NEXT.JS',    'REACT']      }, // TOP
+  { x: 50, y: 5, skills: ['NEXT.JS', 'REACT'] }, // TOP
   { x: 83, y: 17, skills: ['TYPESCRIPT', 'JAVASCRIPT'] }, // RIGHT-TOP
-  { x: 90, y: 50, skills: ['TAILWIND',   'SHADCN']     }, // RIGHT-MID
-  { x: 83, y: 82, skills: ['NODE.JS',    'GO']         }, // RIGHT-BOT
-  { x: 50, y: 93, skills: ['POSTGRESQL', 'REDIS']      }, // BOTTOM
-  { x: 17, y: 82, skills: ['AWS',        'DOCKER']     }, // LEFT-BOT
-  { x: 10, y: 50, skills: ['CI/CD',      'N8N']        }, // LEFT-MID
-  { x: 17, y: 17, skills: ['THREE.JS',   'SHADER']     }, // LEFT-TOP
+  { x: 90, y: 50, skills: ['TAILWIND', 'SHADCN'] }, // RIGHT-MID
+  { x: 83, y: 82, skills: ['NODE.JS', 'GO'] }, // RIGHT-BOT
+  { x: 50, y: 93, skills: ['POSTGRESQL', 'REDIS'] }, // BOTTOM
+  { x: 17, y: 82, skills: ['AWS', 'DOCKER'] }, // LEFT-BOT
+  { x: 10, y: 50, skills: ['CI/CD', 'N8N'] }, // LEFT-MID
+  { x: 17, y: 17, skills: ['THREE.JS', 'SHADER'] }, // LEFT-TOP
 ]
 
 // Slot-machine cycling chip
@@ -191,20 +191,27 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onScrollDown }: HeroSectionProps) {
-  const isMobile = useIsMobile()
-  const isTablet = useIsTablet()
   const [mouseX, setMouseX] = useState(0)
   const [mouseY, setMouseY] = useState(0)
   const [dragX, setDragX] = useState(0)
   const [dragY, setDragY] = useState(0)
-  const dragXRef = useRef(0)
-  const dragYRef = useRef(0)
-  const returnAnimRef = useRef<number | null>(null)
   const avatarRef = useRef<HTMLDivElement>(null)
   const [avatarSize, setAvatarSize] = useState({ w: 520, h: 680 })
   const { navigate } = usePageTransition()
   const isDragging = useRef(false)
   const lastDragPos = useRef({ x: 0, y: 0 })
+  const returnAnimRef = useRef<number | null>(null)
+  const dragXRef = useRef(0)
+  const dragYRef = useRef(0)
+  const isMobile = useIsMobile()
+  const isTablet = useIsTablet()
+
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact')
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   const handleInquiryClick = () => navigate('/inquiry')
 
@@ -230,7 +237,7 @@ export default function HeroSection({ onScrollDown }: HeroSectionProps) {
       cancelAnimationFrame(returnAnimRef.current)
       returnAnimRef.current = null
     }
-    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+    ; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   }
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -304,7 +311,7 @@ export default function HeroSection({ onScrollDown }: HeroSectionProps) {
               textTransform: 'uppercase',
             }}
           >
-            {'// developer · seoul, south korea'}
+            {'// available for new projects · seoul, south korea'}
           </motion.p>
 
           <motion.h1
@@ -332,19 +339,19 @@ export default function HeroSection({ onScrollDown }: HeroSectionProps) {
               maxWidth: '320px',
             }}
           >
-            I build things that scale.<br />
-            Fullstack, AI, mobile — whatever it takes.
+            I turn ideas into real websites and apps.<br />
+            Whatever your business needs — I&apos;ll build it right.
           </motion.p>
 
           <motion.div
-            custom={3}
+
             initial="hidden"
             animate="show"
             variants={fadeUp}
-            style={{ marginTop: '0.6rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}
+            style={{ marginTop: '0.6rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}
           >
-            <MagneticButton href="#contact">Hire Me →</MagneticButton>
-            <MagneticButton onClick={handleInquiryClick}>Project Inquiry →</MagneticButton>
+            <MagneticButton fullWidth onClick={scrollToContact} style={isMobile ? { padding: '0.65rem 1.2rem' } : undefined}>Let&apos;s Work Together →</MagneticButton>
+            <MagneticButton fullWidth onClick={handleInquiryClick} style={isMobile ? { padding: '0.65rem 1.2rem' } : undefined}>Get a Quote →</MagneticButton>
           </motion.div>
         </div>
 

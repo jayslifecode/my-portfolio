@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Oxanium, Space_Mono } from "next/font/google";
 import "./globals.css";
 import LayoutShell from "@/components/LayoutShell";
+import { Analytics } from "@vercel/analytics/next";
 
 const oxanium = Oxanium({
   variable: "--font-oxanium",
@@ -37,6 +38,7 @@ export default function RootLayout({
     <html lang="en" className={`${oxanium.variable} ${spaceMono.variable}`}>
       <body>
         <LayoutShell>{children}</LayoutShell>
+        <Analytics />
       </body>
     </html>
   );

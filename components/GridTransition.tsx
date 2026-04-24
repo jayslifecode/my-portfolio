@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const BLOCK = 38
-const SPEED = 2.8
 const AMPLITUDE = 3
 const FREQ = 0.55
+const TARGET_FRAMES = 20  // transition always takes ~20 frames regardless of screen width
 const HOLD_MS = 80   // hold at full-cover while new page renders
 const COLOR = '#C84B0C'
 const BG = '#0A0A0A'
@@ -72,6 +72,7 @@ export default function GridTransition({ isTransitioning, href, onComplete }: Gr
     const cols = Math.ceil(W / BLOCK) + 2
     const rows = Math.ceil(H / BLOCK) + 1
     const maxFront = cols + AMPLITUDE + 2
+    const speed = maxFront / TARGET_FRAMES
 
     // Fill immediately so there is no transparent frame between canvas mount and first rAF.
     ctx.fillStyle = BG
@@ -115,7 +116,7 @@ export default function GridTransition({ isTransitioning, href, onComplete }: Gr
 
       // --- advance state ---
       if (p === 'entering') {
-        frontRef.current += SPEED
+        frontRef.current += speed
         if (frontRef.current >= maxFront) {
           frontRef.current = maxFront
           phaseRef.current = 'holding'
@@ -130,7 +131,7 @@ export default function GridTransition({ isTransitioning, href, onComplete }: Gr
           }
         }
       } else if (p === 'exiting') {
-        frontRef.current += SPEED
+        frontRef.current += speed
         if (frontRef.current >= maxFront) {
           phaseRef.current = 'idle'
           ctx.clearRect(0, 0, W, H)

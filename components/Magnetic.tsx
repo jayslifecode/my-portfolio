@@ -5,9 +5,10 @@ import gsap from 'gsap'
 
 interface MagneticProps {
   children: React.ReactElement
+  style?: React.CSSProperties
 }
 
-export default function Magnetic({ children }: MagneticProps) {
+export default function Magnetic({ children, style }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -35,5 +36,5 @@ export default function Magnetic({ children }: MagneticProps) {
     }
   }, [])
 
-  return <div ref={ref} style={{ display: 'inline-block' }}>{children}</div>
+  return <div ref={ref} style={{ display: 'inline-block', ...style }}>{children}</div>
 }

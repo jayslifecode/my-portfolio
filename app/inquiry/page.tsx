@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import InquiryQuestionnaire from '@/components/InquiryQuestionnaire'
+import MagneticButton from '@/components/MagneticButton'
 import { usePageTransition } from '@/context/TransitionContext'
 import { useIsMobile } from '@/hooks/useBreakpoint'
 
@@ -42,6 +43,7 @@ export default function InquiryPage() {
   const handleStart = () => setShowQuestionnaire(true)
   const handleComplete = () => {
     setHasDraft(false)
+    setShowQuestionnaire(false)
     setShowComplete(true)
   }
 
@@ -88,46 +90,6 @@ export default function InquiryPage() {
       <EtherealBackground />
 
 
-      {/* Back button */}
-      <button
-        onClick={handleBack}
-        style={{
-          position: 'fixed',
-          top: isMobile ? '56px' : '16px',
-          left: isMobile ? '1.5rem' : '3.5rem',
-          zIndex: 9500,
-          fontFamily: 'var(--font-space-mono), monospace',
-          fontSize: '0.62rem',
-          fontWeight: 700,
-          letterSpacing: '0.12em',
-          color: 'rgba(255,255,255,0.35)',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          cursor: 'pointer',
-          padding: '7px 14px',
-          borderRadius: '4px',
-          lineHeight: 1,
-          transition: 'color 0.18s, background 0.18s, border-color 0.18s',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          userSelect: 'none',
-        }}
-        onMouseEnter={(e) => {
-          const el = e.currentTarget
-          el.style.color = 'var(--ember)'
-          el.style.background = 'rgba(200,75,12,0.08)'
-          el.style.borderColor = 'rgba(200,75,12,0.35)'
-        }}
-        onMouseLeave={(e) => {
-          const el = e.currentTarget
-          el.style.color = 'rgba(255,255,255,0.35)'
-          el.style.background = 'rgba(255,255,255,0.04)'
-          el.style.borderColor = 'rgba(255,255,255,0.1)'
-        }}
-      >
-        ← BACK
-      </button>
 
       <div style={{ minHeight: '100vh', position: 'relative' }}>
         <AnimatePresence mode="wait">
@@ -370,67 +332,62 @@ export default function InquiryPage() {
                     width: '100%',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '22px 8px 22px 0',
+                    padding: '22px 16px',
                     background: 'transparent',
-                    border: 'none',
-                    borderBottom: '1px solid rgba(200,75,12,0.25)',
+                    border: '1px solid rgba(200,75,12,0.25)',
+                    borderLeft: ctaHover ? '2px solid var(--ember)' : '2px solid rgba(200,75,12,0.35)',
                     cursor: 'pointer',
                     overflow: 'hidden',
                     gap: '14px',
+                    transition: 'border-color 0.2s',
+                    marginTop: '1.6rem',
                   }}
                 >
-                  {/* Slide-in fill */}
-                  <motion.div
-                    animate={{ scaleX: ctaHover ? 1 : 0 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'rgba(200,75,12,0.06)',
-                      transformOrigin: 'left',
-                      pointerEvents: 'none',
-                    }}
-                  />
 
                   <span style={{
                     fontFamily: 'var(--font-space-mono), monospace',
                     fontSize: '0.72rem',
-                    color: 'rgba(200,75,12,0.6)',
+                    color: ctaHover ? 'var(--ember)' : 'rgba(200,75,12,0.5)',
                     letterSpacing: '0.1em',
                     position: 'relative',
+                    transition: 'color 0.2s',
                   }}>
                     $
                   </span>
                   <span style={{
                     fontFamily: 'var(--font-space-mono), monospace',
                     fontSize: '0.78rem',
-                    color: ctaHover ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.22)',
+                    color: ctaHover ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.55)',
                     letterSpacing: '0.08em',
                     position: 'relative',
-                    transition: 'color 0.25s',
+                    transition: 'color 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px',
                   }}>
                     {hasDraft ? './resume_draft.sh' : './initiate_brief.sh'}
+                    <span style={{ animation: 'cursor-blink 1.1s step-end infinite', color: 'var(--ember)' }}>▌</span>
                   </span>
 
                   <div style={{
                     flex: 1,
                     height: '1px',
-                    background: ctaHover ? 'rgba(200,75,12,0.2)' : 'rgba(255,255,255,0.04)',
+                    background: ctaHover ? 'rgba(200,75,12,0.25)' : 'rgba(255,255,255,0.04)',
                     transition: 'background 0.35s',
                     position: 'relative',
                   }} />
 
                   <motion.span
-                    animate={{ x: ctaHover ? 3 : 0 }}
+                    animate={{ x: ctaHover ? 4 : 0 }}
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                     style={{
                       fontFamily: 'var(--font-oxanium), sans-serif',
                       fontSize: 'clamp(1.2rem, 2.5vw, 1.9rem)',
                       fontWeight: 800,
-                      color: ctaHover ? '#ffffff' : 'rgba(255,255,255,0.38)',
+                      color: ctaHover ? 'var(--ember)' : 'rgba(255,255,255,0.3)',
                       letterSpacing: '0.02em',
                       position: 'relative',
-                      transition: 'color 0.25s',
+                      transition: 'color 0.2s',
                       lineHeight: 1,
                     }}
                   >
@@ -460,95 +417,184 @@ export default function InquiryPage() {
           {showComplete && (
             <motion.div
               key="complete"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
               style={{
                 minHeight: '100vh',
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: 'column',
                 justifyContent: 'center',
-                padding: '80px 2rem 2rem',
+                padding: isMobile ? '80px 1.5rem 3rem' : '88px 3.5rem 3rem',
+                maxWidth: '1120px',
+                margin: '0 auto',
+                position: 'relative',
               }}
             >
-              <div style={{ textAlign: 'center', maxWidth: '500px' }}>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    margin: '0 auto 2rem',
-                    borderRadius: '50%',
-                    border: '2px solid var(--ember)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '2.5rem',
-                  }}
-                >
-                  ✓
-                </motion.div>
+              {/* Status stamp */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.05, duration: 0.6 }}
+                style={{
+                  position: 'absolute',
+                  top: isMobile ? '72px' : '96px',
+                  right: isMobile ? '1.5rem' : '3.5rem',
+                  textAlign: 'right',
+                  pointerEvents: 'none',
+                }}
+              >
+                <div style={{
+                  fontFamily: 'var(--font-space-mono), monospace',
+                  fontSize: '0.55rem',
+                  letterSpacing: '0.28em',
+                  color: 'rgba(255,255,255,0.12)',
+                  marginBottom: '3px',
+                }}>
+                  TRANSMISSION
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-oxanium), sans-serif',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.14em',
+                  color: 'rgba(200,75,12,0.4)',
+                }}>
+                  SENT · OK
+                </div>
+              </motion.div>
 
-                <motion.h2
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                  style={{
-                    fontFamily: 'var(--font-oxanium), sans-serif',
-                    fontSize: 'clamp(2rem, 5vw, 3rem)',
-                    fontWeight: 700,
-                    color: '#ffffff',
-                    marginBottom: '1rem',
-                  }}
-                >
-                  Thank You!
-                </motion.h2>
+              {/* Overline */}
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.06, duration: 0.5 }}
+                style={{
+                  fontFamily: 'var(--font-space-mono), monospace',
+                  fontSize: '0.78rem',
+                  letterSpacing: '0.2em',
+                  color: 'rgba(200,75,12,0.75)',
+                  marginBottom: '1.4rem',
+                  textTransform: 'uppercase',
+                }}
+              // eslint-disable-next-line react/jsx-no-comment-textnodes
+              >
+                // brief received · awaiting response
+              </motion.p>
 
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
+              {/* Big headline */}
+              <div style={{ marginBottom: '2.2rem', overflow: 'hidden' }}>
+                {['BRIEF', 'RECEIVED'].map((word, i) => (
+                  <motion.div
+                    key={word}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    style={{
+                      fontFamily: 'var(--font-oxanium), sans-serif',
+                      fontSize: 'clamp(2.4rem, 6.5vw, 5.8rem)',
+                      fontWeight: 900,
+                      lineHeight: 0.87,
+                      letterSpacing: '-0.04em',
+                      color: i === 0 ? '#ffffff' : 'transparent',
+                      WebkitTextStroke: i === 1 ? '2px var(--ember)' : undefined,
+                      display: 'block',
+                      marginLeft: i === 1 ? 'clamp(1.5rem, 5vw, 6rem)' : undefined,
+                    }}
+                  >
+                    {word}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Ember rule */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  transformOrigin: 'left',
+                  height: '1px',
+                  background: 'linear-gradient(to right, var(--ember) 55%, transparent)',
+                  marginBottom: '1.6rem',
+                }}
+              />
+
+              {/* Status row */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.42, duration: 0.5 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2rem',
+                  marginBottom: '2rem',
+                  flexWrap: 'wrap',
+                }}
+              >
+                {['BRIEF LOGGED', 'REPLY ≤ 24H', 'JAY NOTIFIED'].map((stat, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      fontFamily: 'var(--font-space-mono), monospace',
+                      fontSize: '0.78rem',
+                      letterSpacing: '0.16em',
+                      color: 'rgba(255,255,255,0.3)',
+                    }}
+                  >
+                    {stat}
+                  </span>
+                ))}
+                <div style={{ flex: 1 }} />
+                <span
                   style={{
                     fontFamily: 'var(--font-space-mono), monospace',
-                    fontSize: '0.85rem',
-                    letterSpacing: '0.05em',
-                    color: 'rgba(255,255,255,0.6)',
-                    lineHeight: 1.8,
-                    marginBottom: '2.5rem',
+                    fontSize: '0.72rem',
+                    letterSpacing: '0.16em',
+                    color: 'var(--ember)',
+                    opacity: 0.8,
                   }}
                 >
-                  Your inquiry has been received. I&apos;ll review your responses and get back to you within 24 hours.
-                </motion.p>
+                  ● TRANSMITTED
+                </span>
+              </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                >
-                  <button
-                    onClick={handleHomeClick}
-                    style={{
-                      padding: '12px 28px',
-                      fontSize: '0.72rem',
-                      fontWeight: 600,
-                      letterSpacing: '0.1em',
-                      color: '#ffffff',
-                      background: 'var(--ember)',
-                      border: '1px solid var(--ember)',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontFamily: 'var(--font-space-mono), monospace',
-                      transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(200, 75, 12, 0.8)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--ember)' }}
-                  >
-                    BACK TO HOME
-                  </button>
-                </motion.div>
-              </div>
+              {/* Message block */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  borderTop: '1px solid rgba(255,255,255,0.055)',
+                  borderBottom: '1px solid rgba(255,255,255,0.055)',
+                  padding: '1.5rem 0',
+                  marginBottom: '2rem',
+                }}
+              >
+                <p style={{
+                  fontFamily: 'var(--font-space-mono), monospace',
+                  fontSize: '0.82rem',
+                  letterSpacing: '0.05em',
+                  color: 'rgba(255,255,255,0.5)',
+                  lineHeight: 1.9,
+                  margin: 0,
+                }}>
+                  Your brief is in. I&apos;ll read through everything and come back to you with a personalised response within 24 hours.
+                  No auto-replies, no templates — just a real answer.
+                </p>
+              </motion.div>
+
+              {/* CTA */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.65, duration: 0.5 }}
+              >
+                <MagneticButton onClick={handleHomeClick} filled>
+                  ← Return to base
+                </MagneticButton>
+              </motion.div>
             </motion.div>
           )}
 
