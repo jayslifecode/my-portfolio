@@ -249,6 +249,8 @@ const initialDraft = typeof window !== 'undefined' ? loadDraft() : { answers: {}
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw_yVyYu1D6q9ZSnPmeyIMMH0xTXiu47pONQicCaeZ3Z2ARrQv6oW74D0DdQJ6DpqMo/exec'
 
+const EMPTY_ARRAY: string[] = []
+
 const QuestionField = memo(function QuestionField({
   q,
   value,
@@ -381,13 +383,19 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
   const [copied, setCopied] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const submitAttempted = useRef(false)
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isMobile = useIsMobile()
 
   useEffect(() => {
-    if (Object.keys(answers).length > 0) {
+    if (Object.keys(answers).length === 0) return
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    saveTimer.current = setTimeout(() => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, section: currentSection }))
       } catch {}
+    }, 500)
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current)
     }
   }, [answers, currentSection])
 
@@ -589,7 +597,7 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
                 <QuestionField
                   key={q.id}
                   q={q}
-                  value={answers[q.id] ?? (q.type === 'multi-chips' ? [] : '')}
+                  value={answers[q.id] ?? (q.type === 'multi-chips' ? EMPTY_ARRAY : '')}
                   error={errors[q.id]}
                   onAnswer={handleTextChange}
                   onChipToggle={handleChipToggle}

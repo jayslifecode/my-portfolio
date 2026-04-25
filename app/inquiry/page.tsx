@@ -87,7 +87,7 @@ export default function InquiryPage() {
         backgroundSize: '52px 52px',
       }}
     >
-      <EtherealBackground />
+      {!isMobile && <EtherealBackground />}
 
 
 

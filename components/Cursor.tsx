@@ -23,6 +23,8 @@ export default function Cursor() {
   const stateRef = useRef<CursorState>('default')
 
   useEffect(() => {
+    if (isTouch) return
+
     const onMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY }
       if (dotRef.current) {
@@ -93,7 +95,7 @@ export default function Cursor() {
       window.removeEventListener('mouseout', onMouseOut)
       cancelAnimationFrame(raf.current)
     }
-  }, [])
+  }, [isTouch])
 
   if (isTouch) return null
 
