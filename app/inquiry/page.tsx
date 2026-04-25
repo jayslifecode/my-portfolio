@@ -120,7 +120,7 @@ export default function InquiryPage() {
                 transition={{ delay: 0.05, duration: 0.6 }}
                 style={{
                   position: 'absolute',
-                  top: isMobile ? '72px' : '96px',
+                  top: isMobile ? '20px' : '96px',
                   right: isMobile ? '1.5rem' : '3.5rem',
                   textAlign: 'right',
                   pointerEvents: 'none',
@@ -438,7 +438,7 @@ export default function InquiryPage() {
                 transition={{ delay: 0.05, duration: 0.6 }}
                 style={{
                   position: 'absolute',
-                  top: isMobile ? '72px' : '96px',
+                  top: isMobile ? '20px' : '96px',
                   right: isMobile ? '1.5rem' : '3.5rem',
                   textAlign: 'right',
                   pointerEvents: 'none',

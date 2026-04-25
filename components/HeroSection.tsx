@@ -348,7 +348,7 @@ export default function HeroSection({ onScrollDown }: HeroSectionProps) {
             initial="hidden"
             animate="show"
             variants={fadeUp}
-            style={{ marginTop: '0.6rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}
+            style={{ marginTop: '0.6rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '0.75rem' }}
           >
             <MagneticButton fullWidth onClick={scrollToContact} style={isMobile ? { padding: '0.65rem 1.2rem' } : undefined}>Let&apos;s Work Together →</MagneticButton>
             <MagneticButton fullWidth onClick={handleInquiryClick} style={isMobile ? { padding: '0.65rem 1.2rem' } : undefined}>Get a Quote →</MagneticButton>
