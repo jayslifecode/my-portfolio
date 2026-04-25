@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { z } from 'zod'
 import MagneticButton from '@/components/MagneticButton'
@@ -249,6 +249,130 @@ const initialDraft = typeof window !== 'undefined' ? loadDraft() : { answers: {}
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw_yVyYu1D6q9ZSnPmeyIMMH0xTXiu47pONQicCaeZ3Z2ARrQv6oW74D0DdQJ6DpqMo/exec'
 
+const QuestionField = memo(function QuestionField({
+  q,
+  value,
+  error,
+  onAnswer,
+  onChipToggle,
+}: {
+  q: Question
+  value: AnswerValue
+  error?: string
+  onAnswer: (id: string, val: string) => void
+  onChipToggle: (id: string, option: string, isMulti: boolean) => void
+}) {
+  const borderColor = error ? 'var(--ember)' : 'rgba(255,255,255,0.1)'
+
+  return (
+    <div>
+      <div style={{
+        fontSize: '0.82rem',
+        fontWeight: 500,
+        color: 'rgba(255,255,255,0.9)',
+        marginBottom: '0.5rem',
+        fontFamily: 'var(--font-space-mono), monospace',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.4rem',
+      }}>
+        {q.label}
+        {q.required && (
+          <span style={{ color: 'var(--ember)', fontSize: '0.7rem', lineHeight: 1 }}>*</span>
+        )}
+      </div>
+
+      {q.hint && (
+        <div style={{
+          fontSize: '0.68rem',
+          color: 'rgba(255,255,255,0.4)',
+          marginBottom: '0.5rem',
+          fontFamily: 'var(--font-space-mono), monospace',
+        }}>
+          {q.hint}
+        </div>
+      )}
+
+      {q.type === 'textarea' && (
+        <textarea
+          value={typeof value === 'string' ? value : ''}
+          onChange={e => onAnswer(q.id, e.target.value)}
+          placeholder={q.placeholder}
+          rows={4}
+          style={{
+            width: '100%',
+            background: 'rgba(255,255,255,0.04)',
+            border: `1px solid ${borderColor}`,
+            borderRadius: '2px',
+            color: '#fff',
+            fontFamily: 'var(--font-space-mono), monospace',
+            fontSize: '0.82rem',
+            padding: '0.75rem 1rem',
+            outline: 'none',
+            boxSizing: 'border-box',
+            resize: 'vertical',
+            transition: 'border-color 0.2s',
+          }}
+        />
+      )}
+
+      {q.type === 'text' && (
+        <input
+          type="text"
+          value={typeof value === 'string' ? value : ''}
+          onChange={e => onAnswer(q.id, e.target.value)}
+          placeholder={q.placeholder}
+          style={{
+            width: '100%',
+            background: 'rgba(255,255,255,0.04)',
+            border: `1px solid ${borderColor}`,
+            borderRadius: '2px',
+            color: '#fff',
+            fontFamily: 'var(--font-space-mono), monospace',
+            fontSize: '0.82rem',
+            padding: '0.75rem 1rem',
+            outline: 'none',
+            boxSizing: 'border-box',
+            transition: 'border-color 0.2s',
+          }}
+        />
+      )}
+
+      {(q.type === 'chips' || q.type === 'multi-chips') && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {q.options?.map(option => {
+            const isSelected = q.type === 'multi-chips'
+              ? Array.isArray(value) && (value as string[]).includes(option)
+              : value === option
+            return (
+              <button
+                key={option}
+                onClick={() => onChipToggle(q.id, option, q.type === 'multi-chips')}
+                style={{
+                  fontFamily: 'var(--font-space-mono), monospace',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.05em',
+                  padding: '0.45rem 0.9rem',
+                  border: `1px solid ${isSelected ? 'var(--ember)' : 'rgba(255,255,255,0.15)'}`,
+                  background: isSelected ? 'rgba(200,75,12,0.15)' : 'rgba(255,255,255,0.03)',
+                  color: isSelected ? 'var(--ember)' : 'rgba(255,255,255,0.6)',
+                  cursor: 'pointer',
+                  borderRadius: '2px',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {option}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      <ErrorMessage message={error} />
+    </div>
+  )
+})
+
 export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnaireProps) {
   const [currentSection, setCurrentSection] = useState(initialDraft.section)
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>(initialDraft.answers)
@@ -266,16 +390,6 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
       } catch {}
     }
   }, [answers, currentSection])
-
-  const clearError = (questionId: string) => {
-    if (errors[questionId]) {
-      setErrors(prev => {
-        const next = { ...prev }
-        delete next[questionId]
-        return next
-      })
-    }
-  }
 
   const validateSection = (sectionIndex: number): Record<string, string> => {
     const requiredIds = sectionRequiredIds[sectionIndex] || []
@@ -320,8 +434,13 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
     return newErrors
   }
 
-  const handleChipToggle = (questionId: string, option: string, isMulti: boolean) => {
-    clearError(questionId)
+  const handleChipToggle = useCallback((questionId: string, option: string, isMulti: boolean) => {
+    setErrors(prev => {
+      if (!prev[questionId]) return prev
+      const next = { ...prev }
+      delete next[questionId]
+      return next
+    })
     setAnswers(prev => {
       const current = prev[questionId]
       if (isMulti) {
@@ -334,12 +453,17 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
         return { ...prev, [questionId]: option }
       }
     })
-  }
+  }, [])
 
-  const handleTextChange = (questionId: string, value: string) => {
-    clearError(questionId)
+  const handleTextChange = useCallback((questionId: string, value: string) => {
+    setErrors(prev => {
+      if (!prev[questionId]) return prev
+      const next = { ...prev }
+      delete next[questionId]
+      return next
+    })
     setAnswers(prev => ({ ...prev, [questionId]: value }))
-  }
+  }, [])
 
   const handleNext = async () => {
     const validationErrors = validateSection(currentSection)
@@ -402,112 +526,6 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const renderQuestion = (q: Question) => {
-    const value = answers[q.id] || []
-    const error = errors[q.id]
-    const hasError = !!error
-
-    const inputBorderColor = hasError ? 'var(--ember)' : 'var(--border)'
-    const inputBg = hasError ? 'rgba(200,75,12,0.05)' : 'var(--surface)'
-
-    if (q.type === 'textarea') {
-      return (
-        <>
-          <textarea
-            value={value}
-            onChange={(e) => handleTextChange(q.id, e.target.value)}
-            placeholder={q.placeholder}
-            rows={3}
-            style={{
-              width: '100%',
-              fontSize: '0.82rem',
-              padding: '8px 12px',
-              border: `1px solid ${inputBorderColor}`,
-              borderRadius: '4px',
-              background: inputBg,
-              color: 'rgba(255,255,255,0.9)',
-              fontFamily: 'var(--font-space-mono), monospace',
-              resize: 'vertical',
-              outline: 'none',
-              transition: 'border-color 0.2s, background 0.2s',
-            }}
-          />
-          <ErrorMessage message={error} />
-        </>
-      )
-    }
-
-    if (q.type === 'text') {
-      return (
-        <>
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => handleTextChange(q.id, e.target.value)}
-            placeholder={q.placeholder}
-            style={{
-              width: '100%',
-              fontSize: '0.82rem',
-              padding: '8px 12px',
-              border: `1px solid ${inputBorderColor}`,
-              borderRadius: '4px',
-              background: inputBg,
-              color: 'rgba(255,255,255,0.9)',
-              fontFamily: 'var(--font-space-mono), monospace',
-              outline: 'none',
-              transition: 'border-color 0.2s, background 0.2s',
-            }}
-          />
-          <ErrorMessage message={error} />
-        </>
-      )
-    }
-
-    if (q.type === 'chips' || q.type === 'multi-chips') {
-      const isMulti = q.type === 'multi-chips'
-      return (
-        <>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {q.options?.map((option, idx) => {
-              const selected = value.includes(option)
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleChipToggle(q.id, option, isMulti)}
-                  style={{
-                    cursor: 'pointer',
-                    fontSize: '0.75rem',
-                    padding: '6px 14px',
-                    borderRadius: '99px',
-                    border: selected
-                      ? '1px solid var(--ember)'
-                      : hasError
-                        ? '1px solid rgba(200,75,12,0.4)'
-                        : '1px solid var(--border)',
-                    background: selected
-                      ? 'rgba(200, 75, 12, 0.15)'
-                      : 'var(--surface)',
-                    color: selected
-                      ? 'var(--ember)'
-                      : 'rgba(255,255,255,0.55)',
-                    fontFamily: 'var(--font-space-mono), monospace',
-                    letterSpacing: '0.05em',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {option}
-                </button>
-              )
-            })}
-          </div>
-          <ErrorMessage message={error} />
-        </>
-      )
-    }
-
-    return null
-  }
-
   const progress = ((currentSection + 1) / sections.length) * 100
 
   return (
@@ -568,34 +586,14 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {sections[currentSection].questions.map((q) => (
-                <div key={q.id}>
-                  <div style={{
-                    fontSize: '0.82rem',
-                    fontWeight: 500,
-                    color: 'rgba(255,255,255,0.9)',
-                    marginBottom: '0.5rem',
-                    fontFamily: 'var(--font-space-mono), monospace',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                  }}>
-                    {q.label}
-                    {q.required && (
-                      <span style={{ color: 'var(--ember)', fontSize: '0.7rem', lineHeight: 1 }}>*</span>
-                    )}
-                  </div>
-                  {q.hint && (
-                    <div style={{
-                      fontSize: '0.68rem',
-                      color: 'rgba(255,255,255,0.4)',
-                      marginBottom: '0.5rem',
-                      fontFamily: 'var(--font-space-mono), monospace',
-                    }}>
-                      {q.hint}
-                    </div>
-                  )}
-                  {renderQuestion(q)}
-                </div>
+                <QuestionField
+                  key={q.id}
+                  q={q}
+                  value={answers[q.id] ?? (q.type === 'multi-chips' ? [] : '')}
+                  error={errors[q.id]}
+                  onAnswer={handleTextChange}
+                  onChipToggle={handleChipToggle}
+                />
               ))}
             </div>
           </motion.div>

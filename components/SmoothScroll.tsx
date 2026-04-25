@@ -1,29 +1,30 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import Lenis from 'lenis'
 
 export default function SmoothScroll() {
-  const lenisRef = useRef<Lenis | null>(null)
-
   useEffect(() => {
+    // iOS/touch devices have native momentum scroll — skip Lenis there
+    if (window.matchMedia('(pointer: coarse)').matches) return
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     })
 
-    lenisRef.current = lenis
+    let rafId: number
 
     function raf(time: number) {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     }
 
-    const id = requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf)
 
     return () => {
-      cancelAnimationFrame(id)
+      cancelAnimationFrame(rafId)
       lenis.destroy()
     }
   }, [])
