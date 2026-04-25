@@ -537,7 +537,7 @@ export default function InquiryQuestionnaire({ onComplete }: InquiryQuestionnair
   const progress = ((currentSection + 1) / sections.length) * 100
 
   return (
-    <div style={{ maxWidth: '660px', margin: '0 auto', padding: '100px 1rem 3rem' }}>
+    <div style={{ maxWidth: '660px', margin: '0 auto', padding: '100px 1rem 5rem' }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

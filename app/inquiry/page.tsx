@@ -79,7 +79,7 @@ export default function InquiryPage() {
       style={{
         background: '#0A0A0A',
         position: 'relative',
-        minHeight: '100vh',
+        minHeight: '100dvh',
         backgroundImage: `
           linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)
@@ -91,7 +91,7 @@ export default function InquiryPage() {
 
 
 
-      <div style={{ minHeight: '100vh', position: 'relative' }}>
+      <div style={{ minHeight: '100dvh', position: 'relative' }}>
         <AnimatePresence mode="wait">
 
           {/* ── INTRO ─────────────────────────────────────────── */}
@@ -103,7 +103,7 @@ export default function InquiryPage() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.4 }}
               style={{
-                minHeight: '100vh',
+                minHeight: '100dvh',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
@@ -421,7 +421,7 @@ export default function InquiryPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
               style={{
-                minHeight: '100vh',
+                minHeight: '100dvh',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
