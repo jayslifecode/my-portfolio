@@ -11,7 +11,7 @@ const CALENDAR_LINK = 'https://calendar.app.google/x5PAhDkLhPem5fBU9'
 export default function ContactSection() {
   const isMobile = useIsMobile()
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: false, margin: '-100px' })
+  const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   const handleEmailClick = () => {
     const subject = encodeURIComponent('Booking a Meeting')
@@ -30,7 +30,7 @@ export default function ContactSection() {
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: isMobile ? 0.25 : 0.5 }}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -51,9 +51,9 @@ export default function ContactSection() {
 
         {/* Big heading */}
         <motion.h2
-          initial={{ opacity: 0, y: 32 }}
+          initial={{ opacity: 0, y: isMobile ? 16 : 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: isMobile ? 0.3 : 0.8, ease: [0.22, 1, 0.36, 1] }}
           style={{
             fontFamily: 'var(--font-oxanium), sans-serif',
             fontSize: 'clamp(3.5rem, 10vw, 7rem)',
@@ -77,7 +77,7 @@ export default function ContactSection() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: isMobile ? 0.25 : 0.7, delay: isMobile ? 0 : 0.15, ease: [0.22, 1, 0.36, 1] }}
           style={{
             fontFamily: 'var(--font-space-mono), monospace',
             fontSize: '0.68rem',
@@ -97,7 +97,7 @@ export default function ContactSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: isMobile ? 0.25 : 0.7, delay: isMobile ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}
         >
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -125,7 +125,7 @@ export default function ContactSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.7, delay: 0.45 }}
+          transition={{ duration: isMobile ? 0.25 : 0.7, delay: isMobile ? 0 : 0.45 }}
           style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginTop: '4rem' }}
         >
           <a

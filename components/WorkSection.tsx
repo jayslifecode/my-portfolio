@@ -124,21 +124,22 @@ function ProjectPreview({ project, index }: { project: Project; index: number })
 interface ProjectRowProps {
   project: Project
   index: number
+  isMobile: boolean
   onMouseEnter: (index: number, x: number, y: number) => void
   onMouseLeave: (index: number, x: number, y: number) => void
   onMouseMove: (x: number, y: number) => void
 }
 
-function ProjectRow({ project, index, onMouseEnter, onMouseLeave, onMouseMove }: ProjectRowProps) {
+function ProjectRow({ project, index, isMobile, onMouseEnter, onMouseLeave, onMouseMove }: ProjectRowProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-60px' })
+  const isInView = useInView(ref, { once: true, margin: isMobile ? '0px' : '-60px' })
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: isMobile ? 10 : 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: isMobile ? 0.25 : 0.6, delay: isMobile ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={(e) => {
         onMouseEnter(index, e.clientX, e.clientY)
         ;(e.currentTarget as HTMLElement).style.background = 'var(--surface)'
@@ -271,7 +272,7 @@ export default function WorkSection() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.05 }}
+            transition={{ duration: isMobile ? 0.25 : 0.5, delay: isMobile ? 0 : 0.05 }}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -323,7 +324,7 @@ export default function WorkSection() {
           <motion.h2
             initial={{ opacity: 0, y: 12 }}
             animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.15 }}
+            transition={{ duration: isMobile ? 0.25 : 0.5, delay: isMobile ? 0 : 0.15 }}
             style={{
               fontFamily: 'var(--font-oxanium), sans-serif',
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
@@ -338,7 +339,7 @@ export default function WorkSection() {
             <motion.p
               initial={{ opacity: 0 }}
               animate={isHeaderInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.25 }}
+              transition={{ duration: 0.5, delay: isMobile ? 0 : 0.25 }}
               style={{
                 fontFamily: 'var(--font-space-mono), monospace',
                 fontSize: '0.6rem',
@@ -359,6 +360,7 @@ export default function WorkSection() {
               key={project.name}
               project={project}
               index={i}
+              isMobile={isMobile}
               onMouseEnter={handleEnter}
               onMouseLeave={handleLeave}
               onMouseMove={moveModal}
